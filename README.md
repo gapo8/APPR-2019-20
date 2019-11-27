@@ -10,11 +10,11 @@ Repozitorij z gradivi pri predmetu APPR v študijskem letu 2019/20
 Za sezono 2018/2019 bom zbral in analiziral podatke o igralcih v rednem delu sezone.
 
 Podatki bodo vključevali:
--višino igralca
--starost igralca
--državljanstvo
--koliko časa je bil igralec v igri
--točke, skoki, asistence...
+- višino igralca
+- starost igralca
+- državljanstvo
+- koliko časa je bil igralec v igri
+- točke, skoki, asistence...
 
 Vir: https://stats.nba.com/
 
