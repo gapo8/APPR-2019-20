@@ -7,7 +7,7 @@ osebni_podatki_skupni <- rbind(osebni_podatki2009_2010, osebni_podatki2010_2011,
 
 osebni_podatki_skupni$PTS <- parse_double(osebni_podatki_skupni$PTS) ##spremeni caracter v double
 osebni_podatki_skupni$REB <- parse_double(osebni_podatki_skupni$REB)
+osebni_podatki_skupni$AST <- parse_double(osebni_podatki_skupni$AST)
 
-
-povprecje_osebni_podatki <- osebni_podatki_skupni %>% group_by(PLAYER, COUNTRY) %>% summarise(POVPRECJE = mean(PTS),)
+povprecje_osebni_podatki <- osebni_podatki_skupni %>% group_by(PLAYER, COUNTRY) %>% summarise(PTS = mean(PTS), REB = mean(REB), AST = mean(AST))
   
