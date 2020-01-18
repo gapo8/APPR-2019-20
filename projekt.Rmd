@@ -21,7 +21,7 @@ source("lib/libraries.r", encoding="UTF-8")
 
 ```{r rstudio, echo=FALSE, results='asis'}
 # Izris povezave do RStudia na Binderju
-source("lib/rstudio.r", encoding="UTF-8")
+source("lib/rstudio.R", encoding="UTF-8")
 ```
 
 # Analiza igralcev NBA
@@ -59,16 +59,16 @@ Nato sem vse podatke iz različnih let združil v eno tabelo.
 Spodnji graf prikazuje 10 držav, iz katerih je bilo v opazovanem obdobju največ igralcev v ligi NBA. 
 Pri tem se ne upošteva ZDA.
 
-```{r histogram, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Graf 10 držav z največ igralci v NBA'}
+```{r stolpicni_diagram, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Graf 10 držav z največ igralci v NBA'}
 ggplot(top10_drzav_igralci) + aes(x=COUNTRY, y=stevilo) + geom_col(fill = 'red')+
 ggtitle("Top 10 držav z največ igralci v NBA") + theme(panel.background = element_rect(fill = 'grey')) 
 ```
 Diagram prikazuje porazdelitev med številom Ameriških in številom ostalih igralcev v NBA.
-```{r histogram, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Primerjava števila ameriških in ostalih igralcev'}
+```{r tortni_diagram, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Primerjava števila ameriških in ostalih igralcev'}
 pie(stevilo[-1], labels = ime[-1], main = 'Število ameriških proti ostalim igralcem')
 ```
 
-```{r histogram, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Graf povprečja točk na državo'}
+```{r stolpicni, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Graf povprečja točk na državo'}
 ggplot(top10_drzav_tocke) + aes(x=COUNTRY, y=PTS) + geom_col(fill='green') +
 ggtitle("Top 10 držav z največjim povprečinim številom točk na igralca") 
 ```
@@ -80,12 +80,12 @@ source("vizualizacija/zemljevid.R", encoding="UTF-8")
 
 Spodnji zemljevid prikazuje stevilo igralcev iz posamezne države, ki igrajo oz. so igrali v NBA 
 
-```{r zemljevid, echo=FALSE, fig.align='center', fig.cap='Zemljevid števila igralcev iz posamezne države'}
+```{r zemljevid1, echo=FALSE, fig.align='center', fig.cap='Zemljevid števila igralcev iz posamezne države'}
 tm_shape(merge(svet, stevilo_igralcev, by.x="NAME_LONG", by.y="COUNTRY")) + tm_polygons("stevilo")
 ```
 
 Zemljevid prikazuje povprečje točk na igralca za vsako državo.
-```{r zemljevid, echo=FALSE, fig.align='center', fig.cap='Zemljevid povprečja točk'}
+```{r zemljevid2, echo=FALSE, fig.align='center', fig.cap='Zemljevid povprečja točk'}
 tm_shape(merge(svet, povprecje_drzave, by.x="NAME_LONG", by.y="COUNTRY")) + tm_polygons("PTS")
 ```
 
