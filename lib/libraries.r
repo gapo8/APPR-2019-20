@@ -4,6 +4,12 @@ library(gsubfn)
 library(tidyr)
 library(shiny)
 library(httr)
-
+library(reshape2)
+library(dygraphs)
+library(xts)
+library(tidyverse)
+library(lubridate)
+library(tmap)
+library(plotrix)
 # Uvozimo funkcije za pobiranje in uvoz zemljevida.
 source("lib/uvozi.zemljevid.r", encoding="UTF-8")
