@@ -1,13 +1,13 @@
 ---
 title: "Poročilo pri predmetu Analiza podatkov s programom R"
-author: "Študent FMF"
+author: "Gašper Potočnik"
 output:
   html_document: default
   pdf_document:
     includes:
       in_header: lib/styles.sty
     latex_engine: xelatex
-runtime: shiny
+
 ---
 
 ```{r setup, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
@@ -24,87 +24,68 @@ source("lib/libraries.r", encoding="UTF-8")
 source("lib/rstudio.r", encoding="UTF-8")
 ```
 
-# Izbira teme
+# Analiza igralcev NBA
 
-Za vzorec bomo prikazali nekaj podatkov o slovenskih občinah.
+Analizirali bomo podatke o igralcih lige NBA v zadnjih 20 letih. Predvsem se bomo oredotočili na razlike med igralci iz Amerike in ostalimi.
 
-![](slike/grb.png)
+![](slike/Nba-logo.jpg)
 
 ***
 
 # Obdelava, uvoz in čiščenje podatkov
 
 ```{r uvoz, echo=FALSE, message=FALSE}
-source("uvoz/uvoz.r", encoding="UTF-8")
+source("uvoz/uvoz_pravi.r", encoding="UTF-8")
+source('podatki/urejanje/urejanje22.R')
 ```
 
-Uvozili smo podatke o občinah v obliki CSV s statističnega urada ter v obliki HTML
-z Wikipedije. Podatke imamo v dveh razpredelnicah v obliki *tidy data*.
+Podatke sem prekopiral in shranil v xlsx. datoteke iz uradne spletne strani NBA ter jih nato uvozil. 
+Nato sem vse podatke iz različnih let združil v eno tabelo.
 
-1. `druzine` - podatki o družinah za vsako občino
-  - `obcina` - spremenljivka: ime občine (neurejen faktor),
-  - `velikost.druzine` - spremenljivka: število otrok v družini (število: 1, 2, 3 ali 4, kjer zadnja vrednost pomeni 4 ali več),
-  - `stevilo.druzin` - meritev: število družin z ustreznim številom otrok v ustrezni občini (število).
+1. Tabele
+  - `osebni_podatki_skupni` - podatki o vseh igralcih v vsem opazovanem obdobju
+  - `povprecje_osebni_podatki` - podatki za posamezne igralce (tisti, ki so igrali več let imajo predstavljene povprečne podatke)
+  - `povprecje_drzave` - podatki o povprečju, ki ga prispevajo vsi igralci iz iste države
+  - `stevilo_igralcev` - število igralcev iz vsake države 
+  - `amerika_svet` - primerjava števila igralcev, ki so iz Amerike in ostalimi
+  - `top10_drzav_igralci` - top 10 držav z največ igralci v NBA
+  - `top10_drzav_tocke` - top 10 držav z največjim povprečinim številom točk na igralca
+  
+2. Spremenljivke
+  - `vsi_igralci`, `igrlci_amerika`, `igralci_ostali`
+  - `stevilo` - vektor, ki pove število vseh igralcev, ameriških igralcev in ostalih igralcev
+  
 
-2. `obcine` - podatki o občinah
-  - `obcina` - spremenljivka: ime občine (neurejen faktor),
-  - `povrsina` - meritev: površina občine v km$^2$ (število),
-  - `prebivalci` - meritev: prebivalstvo občine (število),
-  - `gostota` - meritev: število prebivalcev na km$^2$ (število),
-  - `naselja` - meritev: število naselij v občini (število),
-  - `ustanovitev` - meritev: leto ustanovitve občine (število),
-  - `pokrajina` - meritev: pokrajina, ki ji občina pripada (neurejen faktor),
-  - `regija` - meritev: regija, ki ji občina pripada (neurejen faktor),
-  - `odcepitev` - meritev: podatki o občinah, od katerih se je občina odcepila (besedilo).
+Spodnji graf prikazuje 10 držav, iz katerih je bilo v opazovanem obdobju največ igralcev v ligi NBA. 
+Pri tem se ne upošteva ZDA.
 
-**Opomba**: da bi razpredelnica `obcine` res bila v obliki *tidy data*, bi morali odstraniti stolpec `gostota` (saj je izpeljan iz stolpcev `povrsina` in `prebivalci`), podatke o pokrajinah pa bi morali premakniti v drugo razpredelnico, saj nekatere občine pripadajo dvema pokrajinama. Podobno bi morali narediti tudi s stolpcem `odcepitev`.
-
-Spodnji graf prikazuje porazdelitev števila naselij v občinah.
-
-```{r histogram, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Histogram števila naselij v občinah'}
-ggplot(obcine, aes(x=naselja)) + geom_histogram() +
-  ggtitle("Pogostost števila naselij") + xlab("Število naselij") + ylab("Število občin")
+```{r histogram, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Graf 10 držav z največ igralci v NBA'}
+ggplot(top10_drzav_igralci) + aes(x=COUNTRY, y=stevilo) + geom_col(fill = 'red')+
+ggtitle("Top 10 držav z največ igralci v NBA") + theme(panel.background = element_rect(fill = 'grey')) 
+```
+Diagram prikazuje porazdelitev med številom Ameriških in številom ostalih igralcev v NBA.
+```{r histogram, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Primerjava števila ameriških in ostalih igralcev'}
+pie(stevilo[-1], labels = ime[-1], main = 'Število ameriških proti ostalim igralcem')
 ```
 
-***
-
+```{r histogram, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Graf povprečja točk na državo'}
+ggplot(top10_drzav_tocke) + aes(x=COUNTRY, y=PTS) + geom_col(fill='green') +
+ggtitle("Top 10 držav z največjim povprečinim številom točk na igralca") 
+```
 # Analiza in vizualizacija podatkov
 
 ```{r vizualizacija, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
-source("vizualizacija/vizualizacija.r", encoding="UTF-8")
+source("vizualizacija/zemljevid.R", encoding="UTF-8")
 ```
 
-Spodnji zemljevid prikazuje povprečno velikost družine za vsako občino.
+Spodnji zemljevid prikazuje stevilo igralcev iz posamezne države, ki igrajo oz. so igrali v NBA 
 
-```{r zemljevid, echo=FALSE, fig.align='center', fig.cap='Zemljevid povprečnega števila otrok v družini'}
-ggplot() + geom_polygon(data=left_join(zemljevid, povprecja, by=c("OB_UIME"="obcina")),
-                        aes(x=long, y=lat, group=group, fill=povprecje)) +
-  ggtitle("Povprečno število otrok v družini") + xlab("") + ylab("") +
-  guides(fill=guide_colorbar(title="Povprečje"))
+```{r zemljevid, echo=FALSE, fig.align='center', fig.cap='Zemljevid števila igralcev iz posamezne države'}
+tm_shape(merge(svet, stevilo_igralcev, by.x="NAME_LONG", by.y="COUNTRY")) + tm_polygons("stevilo")
 ```
 
-***
-
-# Napredna analiza podatkov
-
-```{r analiza, echo=FALSE, message=FALSE}
-source("analiza/analiza.r", encoding="UTF-8")
+Zemljevid prikazuje povprečje točk na igralca za vsako državo.
+```{r zemljevid, echo=FALSE, fig.align='center', fig.cap='Zemljevid povprečja točk'}
+tm_shape(merge(svet, povprecje_drzave, by.x="NAME_LONG", by.y="COUNTRY")) + tm_polygons("PTS")
 ```
 
-Spodnji graf prikazuje povezavo med številom naselij in površino občine.
-
-```{r graf, echo=FALSE, fig.align='center', fig.cap='Povezava med številom naselij in površino občine'}
-ggplot(inner_join(obcine, data.frame(obcina=names(skupine),
-                                     skupina=factor(skupine)), by="obcina")
-, aes(x=povrsina, y=naselja, color=skupina, size=prebivalci/1000)) + geom_point() +
-  ggtitle("Število naselij glede na površino občine") +
-  xlab(expression("Površina (km"^2 * ")")) + ylab("Št. naselij") +
-  guides(color=guide_legend(title="Skupina"),
-         size=guide_legend(title="Prebivalci (* 1000)"))
-```
-
-***
-
-```{r shiny, echo=FALSE}
-shinyAppDir("shiny", options=list(width="100%", height=600))
-```
