@@ -26,7 +26,7 @@ source("lib/rstudio.r", encoding="UTF-8")
 
 # Analiza igralcev NBA
 
-Analizirali bomo podatke o igralcih lige NBA v zadnjih 20 letih. Predvsem se bomo oredotočili na razlike med igralci iz Amerike in ostalimi.
+Analiziral bom podatke o igralcih ligi NBA v zadnjih 20 letih (2000 - 2019). Predvsem se bom oredotočili na primerjavo med igralci iz Amerike in ostalimi.
 
 ![](slike/Nba-logo.jpg)
 
@@ -40,7 +40,7 @@ source('podatki/urejanje/urejanje22.R')
 ```
 
 Podatke sem prekopiral in shranil v xlsx. datoteke iz uradne spletne strani NBA ter jih nato uvozil. 
-Nato sem vse podatke iz različnih let združil v eno tabelo.
+Nato sem vse podatke iz različnih let združil v eno tabelo in od tam naprej nadaljeval z urejanjem in obdelavo.
 
 1. Tabele
   - `osebni_podatki_skupni` - podatki o vseh igralcih v vsem opazovanem obdobju
@@ -56,36 +56,48 @@ Nato sem vse podatke iz različnih let združil v eno tabelo.
   - `stevilo` - vektor, ki pove število vseh igralcev, ameriških igralcev in ostalih igralcev
   
 
-Spodnji graf prikazuje 10 držav, iz katerih je bilo v opazovanem obdobju največ igralcev v ligi NBA. 
-Pri tem se ne upošteva ZDA.
-
-```{r stolpicni_diagram, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Graf 10 držav z največ igralci v NBA'}
-ggplot(top10_drzav_igralci) + aes(x=COUNTRY, y=stevilo) + geom_col(fill = 'red')+
-ggtitle("Top 10 držav z največ igralci v NBA") + theme(panel.background = element_rect(fill = 'grey')) 
-```
-Diagram prikazuje porazdelitev med številom Ameriških in številom ostalih igralcev v NBA.
-```{r tortni_diagram, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Primerjava števila ameriških in ostalih igralcev'}
-pie(stevilo[-1], labels = ime[-1], main = 'Število ameriških proti ostalim igralcem')
-```
-
-```{r stolpicni, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Graf povprečja točk na državo'}
-ggplot(top10_drzav_tocke) + aes(x=COUNTRY, y=PTS) + geom_col(fill='green') +
-ggtitle("Top 10 držav z največjim povprečinim številom točk na igralca") 
-```
 # Analiza in vizualizacija podatkov
 
 ```{r vizualizacija, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
 source("vizualizacija/zemljevid.R", encoding="UTF-8")
 ```
 
-Spodnji zemljevid prikazuje stevilo igralcev iz posamezne države, ki igrajo oz. so igrali v NBA 
+Spodnji graf prikazuje 10 držav (razen ZDA), iz katerih je bilo v opazovanem obdobju največ igralcev v ligi NBA. Kot lahko hitro vidimo, je večina držav iz Evrope. Država z največjim številom igralcev v NBA (poleg ZDA) pa je Kanada.
 
-```{r zemljevid1, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Zemljevid števila igralcev iz posamezne države'}
-tm_shape(merge(svet, stevilo_igralcev, by.x="NAME_LONG", by.y="COUNTRY")) + tm_polygons("stevilo")
+
+```{r stolpicni_diagram, echo=FALSE, message=FALSE, fig.align='center', fig.cap=''}
+ggplot(top10_drzav_igralci) + aes(x=COUNTRY, y=stevilo) + geom_col(fill = 'red')+
+ggtitle("Top 10 držav z največ igralci v NBA") + theme(panel.background = element_rect(fill = 'grey')) 
 ```
 
-Zemljevid prikazuje povprečje točk na igralca za vsako državo.
-```{r zemljevid2, echo=FALSE, message=FALSE, fig.align='center', fig.cap='Zemljevid povprečja točk'}
-tm_shape(merge(svet, povprecje_drzave, by.x="NAME_LONG", by.y="COUNTRY")) + tm_polygons("PTS")
+
+Spodnji zemljevid prikazuje stevilo igralcev iz posamezne države, ki igrajo oz. so igrali v NBA. Zemljevid ne prikazuje števila igralcev ZDA. Kot smo videli že na zgornjem grafu, je večina igralcev iz Evrope, Južne Amerike, Kanade in Avstralije. Zelo malo pa jih je iz Azije in Afrike.
+
+
+```{r zemljevid1, echo=FALSE, message=FALSE, fig.align='center', fig.cap=''}
+zemljevid_stevila_igralcev
+```
+
+Diagram prikazuje porazdelitev med številom Ameriških in številom ostalih igralcev v NBA. Vidimo lahko, da je približno štiri petine vseh igralcev iz ZDA.
+
+```{r tortni_diagram, echo=FALSE, message=FALSE, fig.align='center', fig.cap=''}
+pie(stevilo[-1], labels = ime[-1], main = 'Primerjava števila ameriških in ostalih igralcev')
+
+```
+
+V grafu je prikazano povprečje točk na igralca v posamezni državi za 10 držav z najvišjim povprečjem. 
+
+```{r stolpicni, echo=FALSE, message=FALSE, fig.align='center', fig.cap=''}
+ggplot(top10_drzav_tocke) + aes(x=COUNTRY, y=PTS) + geom_col(fill='green') + coord_flip() +
+ggtitle("Top 10 držav z največjim povprečinim številom točk na igralca") 
+```
+
+
+
+
+Zemljevid prikazuje povprečje točk na igralca za vsako državo.V tem primeru je število dokaj enakomerno porazdeljeno, čeprav je povprečje nekoliko višje v Evropi in nekoliko nižje v Afriki.
+
+```{r zemljevid2, echo=FALSE, message=FALSE, fig.align='center', fig.cap=''}
+zemljevid_povprecja_tock
 ```
 

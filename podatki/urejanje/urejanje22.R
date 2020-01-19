@@ -13,6 +13,8 @@ osebni_podatki_skupni$PTS <- parse_double(osebni_podatki_skupni$PTS) ##spremeni 
 osebni_podatki_skupni$REB <- parse_double(osebni_podatki_skupni$REB)
 osebni_podatki_skupni$AST <- parse_double(osebni_podatki_skupni$AST)
 
+
+
 povprecje_osebni_podatki <- osebni_podatki_skupni %>% group_by(PLAYER, COUNTRY) %>% summarise(PTS = mean(PTS), REB = mean(REB), AST = mean(AST))
 
 povprecje_drzave <- osebni_podatki_skupni %>% group_by(COUNTRY) %>% summarise(PTS = mean(PTS), REB = mean(REB), AST = mean(AST))
@@ -21,8 +23,10 @@ povprecje_drzave <- osebni_podatki_skupni %>% group_by(COUNTRY) %>% summarise(PT
 stevilo_igralcev <- povprecje_osebni_podatki %>% group_by(COUNTRY) %>% summarise(stevilo = n())
 
 povprecje_drzave$COUNTRY[povprecje_drzave$COUNTRY == 'USA'] <- 'United States'
+povprecje_drzave$COUNTRY[povprecje_drzave$COUNTRY == 'Russia'] <- 'Russian Federation'
 stevilo_igralcev$COUNTRY[stevilo_igralcev$COUNTRY == 'USA'] <- 'United States'
-
+stevilo_igralcev$COUNTRY[stevilo_igralcev$COUNTRY == 'Russia'] <- 'Russian Federation'
+stevilo_igralcev$COUNTRY[stevilo_igralcev$COUNTRY == 'South Korea'] <- 'Republic of Korea'
 
 vsi_igralci <- sum(stevilo_igralcev$stevilo)
 igralci_amerika <- unlist(stevilo_igralcev[69, 2])
@@ -38,4 +42,5 @@ stevilo_igralcev_brez_amerike_in_NA <- stevilo_igralcev[-c(69, 73),]
 top10_drzav_igralci <- stevilo_igralcev_brez_amerike_in_NA %>% top_n(stevilo, n = 10)
 
 top10_drzav_tocke <- povprecje_drzave %>% top_n(PTS, n =10)
+
 
